@@ -1,5 +1,5 @@
 from google.adk.tools import FunctionTool
-import google.generativeai as genai
+import google.genai as genai
 import os
 
 def fetch_live_match_state(match_url: str) -> dict:
