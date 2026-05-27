@@ -5,20 +5,36 @@ const Landing = () => {
   return (
     <div className="flex flex-col items-center">
       {/* Hero */}
-      <section className="w-full max-w-5xl text-center py-20 px-4">
-        <h1 className="text-5xl font-bold mb-6 text-white">
-          Meet <span className="text-primary">Captain Cool</span>
-        </h1>
-        <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-          A multi-agent IPL match strategist built on Google Gemini + Google ADK.
-          Experience the ultimate debate between stats, strategies, and cricket intuition.
-        </p>
-        <Link 
-          to="/analyze" 
-          className="bg-primary hover:bg-green-500 text-black font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-primary/50 transition-all text-lg"
+      <section className="relative w-full min-h-[80vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="absolute top-0 left-0 w-full h-full object-cover z-0"
         >
-          Analyze a Match
-        </Link>
+          <source src="/Stadium.mp4" type="video/mp4" />
+        </video>
+        {/* Overlay */}
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/30 to-black/90 z-[1]"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 w-full max-w-5xl py-20">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white leading-tight">
+            🏏 <span className="text-primary">Captain Cool</span>
+            <span className="block text-3xl md:text-4xl text-gray-200 mt-4 font-semibold">— Multi-Agent IPL Match Strategist</span>
+          </h1>
+          <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+            A multi-agent IPL match strategist built on Google Gemini + Google ADK.
+            Experience the ultimate debate between stats, strategies, and cricket intuition.
+          </p>
+          <Link 
+            to="/analyze" 
+            className="inline-block bg-primary hover:bg-green-500 text-black font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-primary/50 transition-all text-lg"
+          >
+            Analyze a Match
+          </Link>
+        </div>
       </section>
 
       {/* Tech Stack Strip */}
