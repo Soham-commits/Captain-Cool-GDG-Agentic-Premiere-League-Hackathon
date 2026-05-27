@@ -16,7 +16,6 @@
 **Event:** GDG - Agentic Premier League (APL) — Pune  
 **Problem Statement:** Captain Cool — The Multi-Agent IPL Match Strategist  
 **Stack:** Google Gemini 2.5 Pro/Flash · Google ADK · Vertex AI Agent Engine  
-**Team:** Soham Sambare
 
 ---
 
