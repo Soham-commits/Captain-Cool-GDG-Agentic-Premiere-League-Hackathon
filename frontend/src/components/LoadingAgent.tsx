@@ -24,9 +24,9 @@ const LoadingAgent = ({ name, statusText, accentColor, isActive, isCompleted }: 
 			</div>
 			<div className="mt-3 flex items-center gap-2 text-sm text-textMuted font-mono">
 				{isCompleted ? (
-					<span className="text-primary">✓</span>
+					<span className="text-primary font-bold">✓</span>
 				) : (
-					<span className="h-3.5 w-3.5 rounded-full border-2 border-textMuted border-t-primary animate-spin" />
+					<span className="h-3 w-3 rounded-full bg-primary animate-pulse" />
 				)}
 				<span>{statusText}</span>
 			</div>

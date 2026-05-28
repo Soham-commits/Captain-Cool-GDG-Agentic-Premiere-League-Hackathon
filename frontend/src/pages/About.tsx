@@ -25,13 +25,20 @@ const About = () => {
 
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Architecture</h2>
-        <div className="bg-card p-6 rounded-xl border border-white/10 font-mono text-sm text-textMuted">
-          <p>[ User Input ] ➔ [ Orchestrator ]</p>
-          <p className="pl-8">➔ [ Stats Analyst ] (Retrieves Cricbuzz & Weather Context)</p>
-          <p className="pl-8">➔ [ Strategist ]</p>
-          <p className="pl-8">➔ [ Devil's Advocate ] (Dissent & Risks)</p>
-          <p className="pl-8">➔ [ Strategist Round 2 ]</p>
-          <p className="pl-8">➔ [ Commentator ] (Final Output & Confidence)</p>
+        <div className="overflow-x-auto">
+          <div className="min-w-[320px] bg-card p-6 rounded-xl border border-white/10">
+            <div className="flex flex-col items-center gap-4">
+              <DiagramNode title="Match State Input" subtitle="Form / URL / Screenshot" color="#424242" />
+              <Arrow />
+              <DiagramNode title="Stats Analyst" subtitle="gemini-2.5-flash + 3 tools" color="#1565c0" />
+              <Arrow />
+              <DiagramNode title="Strategist → Devil's Advocate → Strategist R2" subtitle="The debate loop" color="#00e676" />
+              <Arrow />
+              <DiagramNode title="Commentator" subtitle="Final call + counterfactual" color="#7b1fa2" />
+              <Arrow />
+              <DiagramNode title="Decision Output" subtitle="Confidence score + dissent surfaced" color="#ff6d00" />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -46,5 +53,14 @@ const About = () => {
     </div>
   );
 };
+
+const Arrow = () => <div className="h-8 w-[2px] bg-primary" />;
+
+const DiagramNode = ({ title, subtitle, color }: { title: string; subtitle: string; color: string }) => (
+  <div className="w-full rounded-xl border border-white/10 px-4 py-4 text-center shadow-lg" style={{ backgroundColor: '#0f1923', borderLeft: `4px solid ${color}` }}>
+    <p className="text-textMain font-semibold">{title}</p>
+    <p className="mt-1 text-sm text-textMuted">{subtitle}</p>
+  </div>
+);
 
 export default About;

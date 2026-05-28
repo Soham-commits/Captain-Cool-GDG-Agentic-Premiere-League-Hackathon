@@ -39,22 +39,39 @@ const loadingSteps = [
 
 const DebatePanel = ({ isLoading, activeStep, results }: DebatePanelProps) => {
 	if (isLoading) {
+		const visibleSteps = loadingSteps.filter((_, index) => index < activeStep);
+		const topGridSteps = visibleSteps.slice(0, 4);
+		const commentatorStep = visibleSteps[4];
+
 		return (
-			<div className="space-y-3">
-				{loadingSteps.map((step, index) => {
-					const isCompleted = activeStep > index + 1;
-					const isActive = activeStep === index + 1;
-					return (
-						<LoadingAgent
-							key={step.name}
-							name={step.name}
-							statusText={step.message}
-							accentColor={step.accentColor}
-							isCompleted={isCompleted}
-							isActive={isActive}
-						/>
-					);
-				})}
+			<div className="space-y-4">
+				<div className="grid md:grid-cols-2 gap-4">
+					{topGridSteps.map((step, index) => {
+						const stepNumber = index + 1;
+						const isCompleted = activeStep > stepNumber;
+						const isActive = activeStep === stepNumber;
+						return (
+							<LoadingAgent
+								key={step.name}
+								name={step.name}
+								statusText={step.message}
+								accentColor={step.accentColor}
+								isCompleted={isCompleted}
+								isActive={isActive}
+							/>
+						);
+					})}
+				</div>
+				{commentatorStep && (
+					<LoadingAgent
+						key={commentatorStep.name}
+						name={commentatorStep.name}
+						statusText={commentatorStep.message}
+						accentColor={commentatorStep.accentColor}
+						isCompleted={false}
+						isActive={activeStep === 5}
+					/>
+				)}
 			</div>
 		);
 	}
@@ -74,7 +91,7 @@ const DebatePanel = ({ isLoading, activeStep, results }: DebatePanelProps) => {
 
 	return (
 		<div className="space-y-4">
-			<div className="grid lg:grid-cols-2 gap-4">
+			<div className="grid md:grid-cols-2 gap-4">
 				{standardAgents.map((agent) => (
 					<AgentCard
 						key={agent.id}
@@ -94,7 +111,7 @@ const DebatePanel = ({ isLoading, activeStep, results }: DebatePanelProps) => {
 				>
 					<div className="flex flex-wrap items-center justify-between gap-3 mb-4">
 						<h3 className="text-xl md:text-2xl font-semibold">🎙️ Commentator</h3>
-						<span className="px-3 py-1 rounded-full bg-white/10 text-xs text-textMuted">{commentator.model}</span>
+						<span className="px-3 py-1 rounded-full text-xs text-white" style={{ backgroundColor: '#424242' }}>{commentator.model}</span>
 					</div>
 
 					<p className="text-2xl md:text-3xl font-extrabold text-primary leading-tight mb-6">{results.finalCall}</p>

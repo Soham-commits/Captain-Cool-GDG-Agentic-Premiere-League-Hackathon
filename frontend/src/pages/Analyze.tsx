@@ -20,7 +20,7 @@ const buildMockDebate = (data: MatchFormSubmitData): DebateResults => {
       {
         id: 'strategist',
         name: '🧠 Strategist',
-        model: 'gemini-2.5-pro',
+        model: 'gemini-2.5-flash',
         accentColor: '#00e676',
         output:
           'Primary plan: force batsman to hit against the larger side, hold one elite over for the final six balls, and protect straight boundaries with pace-off variation.',
@@ -36,7 +36,7 @@ const buildMockDebate = (data: MatchFormSubmitData): DebateResults => {
       {
         id: 'strategist2',
         name: '🔄 Strategist Round 2',
-        model: 'gemini-2.5-pro',
+        model: 'gemini-2.5-flash',
         accentColor: '#ff8f00',
         output:
           'Revision: mix hard length at body with occasional yorker, keep deep third man finer, and preserve matchup flexibility if an impact player enters.',
@@ -90,25 +90,25 @@ const Analyze = () => {
 
     stepIntervalRef.current = window.setInterval(() => {
       setActiveStep((prev) => Math.min(prev + 1, 5));
-    }, 550);
+    }, 800);
 
     resultTimerRef.current = window.setTimeout(() => {
       clearTimers();
       setActiveStep(5);
       setResults(buildMockDebate(data));
       setIsLoading(false);
-    }, 3400);
+    }, 4200);
   };
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8">
       {/* Left Panel: Match Input */}
-      <div>
+      <div className="w-full">
         <MatchInputForm onSubmit={handleAnalyze} isLoading={isLoading} />
       </div>
       
       {/* Right Panel: Debate Reveal */}
-      <div className="bg-card border border-white/10 rounded-xl p-5 min-h-[500px]">
+      <div className="w-full bg-card border border-white/10 rounded-xl p-5 min-h-[500px]">
         <DebatePanel isLoading={isLoading} activeStep={activeStep} results={results} />
       </div>
     </div>

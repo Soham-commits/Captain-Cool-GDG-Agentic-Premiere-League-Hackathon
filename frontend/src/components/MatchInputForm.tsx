@@ -39,12 +39,12 @@ const MatchInputForm = ({ onSubmit, isLoading }: MatchInputFormProps) => {
     ball: 1,
     currentScore: '156/3',
     wicketsLost: 3,
-    target: 191,
-    requiredRunRate: 17.5,
+    target: 181,
+    requiredRunRate: 12.5,
     striker: 'MS Dhoni 34* off 28',
-    nonStriker: 'Ravindra Jadeja 22* off 12',
+    nonStriker: 'Ravindra Jadeja 12* off 8',
     bowlersRemaining: 'Bumrah: 2 overs\nChahal: 1 over',
-    pitch: 'Two-paced',
+    pitch: 'Flat',
     venue: 'Wankhede Stadium',
     dewFactor: 'High',
     impactPlayerAvailable: true,
@@ -70,7 +70,7 @@ const MatchInputForm = ({ onSubmit, isLoading }: MatchInputFormProps) => {
     <div className="bg-card p-6 rounded-xl border border-white/10">
       <h2 className="text-2xl font-bold mb-6">Match Context</h2>
       
-      <div className="flex gap-2 mb-6 bg-[#091017] p-1 rounded-lg border border-white/10">
+      <div className="flex flex-col sm:flex-row gap-2 mb-6 bg-[#091017] p-1 rounded-lg border border-white/10">
         {['form', 'url', 'screenshot'].map((tab) => (
           <button
             key={tab}
@@ -312,9 +312,16 @@ const MatchInputForm = ({ onSubmit, isLoading }: MatchInputFormProps) => {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-primary hover:bg-primary/85 text-black font-bold py-3 rounded-lg transition-colors mt-6 disabled:opacity-50"
+          className="w-full bg-primary hover:bg-primary/85 text-black font-bold py-3 rounded-lg transition-all mt-6 disabled:opacity-50 cta-hover-glow"
         >
-          {isLoading ? 'Analyzing...' : 'Analyze Strategies'}
+          {isLoading ? (
+            <span className="inline-flex items-center justify-center gap-3">
+              <span className="h-5 w-5 rounded-full border-2 border-black/30 border-t-black animate-spin" />
+              Analyzing...
+            </span>
+          ) : (
+            'Analyze Strategies'
+          )}
         </button>
       </form>
     </div>

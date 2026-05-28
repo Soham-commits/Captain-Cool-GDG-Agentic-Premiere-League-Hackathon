@@ -19,3 +19,33 @@
     min-height: 100vh;
   }
 }
+
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes ballSpin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .ball-spin {
+    animation: ballSpin 0.8s linear infinite;
+  }
+
+  .cta-hover-glow:hover {
+    box-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
+  }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 type ConfidenceGaugeProps = {
 	value: number;
@@ -6,17 +6,35 @@ type ConfidenceGaugeProps = {
 
 const ConfidenceGauge = ({ value }: ConfidenceGaugeProps) => {
 	const [animatedValue, setAnimatedValue] = useState(0);
+	const gaugeRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
-		const timer = window.setTimeout(() => setAnimatedValue(value), 120);
-		return () => window.clearTimeout(timer);
+		const element = gaugeRef.current;
+		if (!element) {
+			return;
+		}
+
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) {
+					setAnimatedValue(0);
+					const timer = window.setTimeout(() => setAnimatedValue(value), 60);
+					observer.disconnect();
+					return () => window.clearTimeout(timer);
+				}
+			},
+			{ threshold: 0.4 }
+		);
+
+		observer.observe(element);
+		return () => observer.disconnect();
 	}, [value]);
 
 	const clamped = useMemo(() => Math.max(0, Math.min(100, animatedValue)), [animatedValue]);
 	const degree = Math.round((clamped / 100) * 360);
 
 	return (
-		<div className="rounded-xl border border-white/10 bg-[#0a141f] p-4">
+		<div ref={gaugeRef} className="rounded-xl border border-white/10 bg-[#0a141f] p-4">
 			<p className="text-xs tracking-wide text-textMuted mb-3">CONFIDENCE</p>
 			<div className="flex items-center justify-center">
 				<div
