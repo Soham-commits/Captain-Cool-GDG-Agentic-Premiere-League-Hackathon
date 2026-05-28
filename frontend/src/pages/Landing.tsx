@@ -1,288 +1,321 @@
-import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import TechStackStrip from '../components/TechStackStrip';
-
-const strategistCards = [
-  {
-    name: 'Stats Analyst',
-    accent: '#1565c0',
-    model: 'gemini-2.5-flash',
-    modelBg: '#424242',
-    blurb: 'Win rates, matchup trends, pressure-over math in seconds.',
-  },
-  {
-    name: 'Strategist',
-    accent: '#00e676',
-    model: 'gemini-2.5-pro',
-    modelBg: '#ff6d00',
-    blurb: 'Primary tactical plan tuned to game state and resources left.',
-  },
-  {
-    name: "Devil's Advocate",
-    accent: '#ef5350',
-    model: 'gemini-2.5-flash',
-    modelBg: '#424242',
-    blurb: 'Punches holes in safe logic and exposes hidden downside.',
-  },
-  {
-    name: 'Strategist Round 2',
-    accent: '#ff8f00',
-    model: 'gemini-2.5-pro',
-    modelBg: '#ff6d00',
-    blurb: 'Rebuilds the call after stress-testing edge-case outcomes.',
-  },
-  {
-    name: 'Commentator',
-    accent: '#7b1fa2',
-    model: 'gemini-2.5-flash',
-    modelBg: '#424242',
-    blurb: 'Turns the debate into one clear, confident match call.',
-  },
-];
+import { useEffect, useRef } from 'react';
 
 const Landing = () => {
-  const tensionSectionRef = useRef<HTMLElement | null>(null);
-  const finalCtaSectionRef = useRef<HTMLElement | null>(null);
-  const strategistSectionRef = useRef<HTMLElement | null>(null);
-  const [showTensionContent, setShowTensionContent] = useState(false);
-  const [showFinalCtaContent, setShowFinalCtaContent] = useState(false);
-  const [visibleStrategistCards, setVisibleStrategistCards] = useState(0);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    const element = tensionSectionRef.current;
-    if (!element) {
-      return;
-    }
+    const video = videoRef.current;
+    if (!video) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowTensionContent(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.35 }
-    );
+    // Make sure we pause the video to control manually
+    video.pause();
 
-    observer.observe(element);
-    return () => observer.disconnect();
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      
+      if (maxScroll <= 0) return;
+      
+      const scrollProgress = Math.max(0, Math.min(1, scrollTop / maxScroll));
+
+      if (video.duration) {
+        // Optional: you can clamp it slightly below duration so it doesn't end abruptly
+        const targetTime = scrollProgress * video.duration;
+        window.requestAnimationFrame(() => {
+          video.currentTime = targetTime;
+        });
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    video.addEventListener('loadedmetadata', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      video.removeEventListener('loadedmetadata', handleScroll);
+    };
   }, []);
-
-  useEffect(() => {
-    const element = finalCtaSectionRef.current;
-    if (!element) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowFinalCtaContent(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const element = strategistSectionRef.current;
-    if (!element) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          let index = 0;
-          setVisibleStrategistCards(0);
-
-          const timer = window.setInterval(() => {
-            index += 1;
-            setVisibleStrategistCards(index);
-            if (index >= strategistCards.length) {
-              window.clearInterval(timer);
-            }
-          }, 100);
-
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.25 }
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  const revealClass = showTensionContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8';
-  const finalCtaRevealClass = showFinalCtaContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8';
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Hero */}
-      <section className="relative w-full min-h-[80vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
-        >
-          <source src="/Stadium.mp4" type="video/mp4" />
-        </video>
-        {/* Overlay */}
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/30 to-black/90 z-[1]"></div>
-        
-        {/* Content */}
-        <div className="relative z-10 w-full max-w-5xl py-20">
-          <h1 className="text-[48px] md:text-6xl font-bold mb-6 text-white leading-tight">
-            🏏 <span className="text-primary">Captain Cool</span>
-            <span className="block text-3xl md:text-4xl text-textMain mt-4 font-semibold">- Multi-Agent IPL Match Strategist</span>
-          </h1>
-          <p className="text-xl text-textMain/85 mb-10 max-w-2xl mx-auto">
-            A multi-agent IPL match strategist built on Google Gemini + Google ADK.
-            Experience the ultimate debate between stats, strategies, and cricket intuition.
-          </p>
-          <Link 
-            to="/analyze" 
-            className="inline-block bg-primary hover:bg-primary/85 text-black font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-primary/50 transition-all text-lg cta-hover-glow"
-          >
-            Analyze a Match
-          </Link>
+    <div className="w-full flex flex-col min-h-screen pt-16 lg:pt-0 overflow-x-hidden text-left text-[#f9ab00] bg-transparent">
+      <video 
+        ref={videoRef}
+        src="/Stadium.mp4" 
+        className="fixed top-0 left-0 w-full h-full object-cover -z-50 opacity-100"
+        preload="auto"
+        muted
+        playsInline
+        style={{ backgroundColor: 'black' }}
+      />
+      <div className="fixed top-0 left-0 w-full h-full -z-40 bg-[#1a73e8]/40 backdrop-blur-[2px] mix-blend-multiply"></div>
+      {/* SECTION 1 - Hero */}
+      <section className="relative w-full min-h-[90vh] flex items-center justify-start px-8 lg:px-24 py-24 overflow-hidden">
+        {/* Floating Shapes */}
+        <div className="pill-shape bg-google-green" style={{ width: '140px', height: '28px', top: '15%', left: '10%', transform: 'rotate(-5deg)' }} />
+        <div className="pill-shape bg-google-yellow" style={{ width: '100px', height: '24px', bottom: '20%', left: '30%', transform: 'rotate(8deg)' }} />
+        <div className="circle-shape bg-google-blue" style={{ width: '280px', height: '280px', bottom: '-50px', right: '-50px' }} />
+        <div className="absolute font-bold text-google-yellow" style={{ fontSize: '80px', top: '15%', right: '15%', lineHeight: 1 }}>★</div>
+        <div className="circle-shape bg-google-red" style={{ width: '40px', height: '40px', top: '35%', left: '55%' }} />
+
+        {/* Left Side Vertical Text */}
+        <div className="absolute left-8 top-1/3 origin-bottom-left -rotate-90 text-[#00c853] text-[11px] tracking-[3px] font-medium hidden lg:block whitespace-nowrap">
+          MULTI-AGENT / IPL STRATEGIST / GOOGLE GEMINI
+        </div>
+
+        <div className="relative z-10 w-full max-w-5xl lg:ml-12 mt-12">
+          {/* Main Hero Text */}
+          <div className="flex flex-col">
+            <h1 className="text-[72px] lg:text-[96px] font-[900] tracking-[-4px] leading-[0.9] text-google-blue m-0">
+              CAPTAIN
+            </h1>
+            <h1 className="text-[72px] lg:text-[96px] font-[900] tracking-[-4px] leading-[0.9] text-[#f9ab00] m-0">
+              COOL
+            </h1>
+          </div>
+
+          {/* Stat Pills */}
+          <div className="mt-[32px] flex flex-wrap gap-4">
+            <span className="pill-stat bg-google-blue text-[#f9ab00]">5 AGENTS</span>
+            <span className="pill-stat bg-google-green text-[#f9ab00]">3 TOOLS</span>
+            <span className="pill-stat bg-google-yellow text-[#f9ab00]">GEMINI 2.5</span>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-[24px]">
+            <Link to="/analyze" className="bg-[#ea4335]/80 hover:bg-[#ea4335] text-[#f9ab00] backdrop-blur-md border border-[#ea4335]/50 px-6 py-3 rounded-full font-bold inline-block hover:scale-[1.02] active:scale-[0.98] transition-transform">
+              Analyze a Match →
+            </Link>
+          </div>
+        </div>
+
+        {/* Bottom Right Explore */}
+        <div className="absolute bottom-8 right-8 text-[13px] text-[#00c853] font-medium tracking-wide">
+          EXPLORE &darr;
         </div>
       </section>
 
-      {/* Tech Stack Strip */}
-      <TechStackStrip />
+      {/* SECTION 2 - Problem */}
+      <section className="relative w-full bg-transparent backdrop-blur-md bg-[#ea4335]/40 border-y border-[#f9ab00]/50 text-[#f9ab00] px-8 lg:px-24 py-32 overflow-hidden flex flex-col">
+        {/* Floating shapes */}
+        <div className="pill-shape bg-google-blue" style={{ width: '120px', height: '32px', top: '10%', right: '15%', transform: 'rotate(12deg)' }} />
+        <div className="circle-shape bg-google-green" style={{ width: '60px', height: '60px', bottom: '15%', left: '8%' }} />
 
-      {/* Tension Section */}
-      <section
-        ref={tensionSectionRef}
-        className="relative w-full min-h-screen bg-background overflow-hidden flex items-center justify-center px-4"
-      >
-        <p className="absolute inset-0 grid place-items-center text-white/5 text-[72px] md:text-[120px] font-extrabold tracking-[0.08em] select-none pointer-events-none">
-          19th OVER
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-8 items-start lg:items-center">
+          <div className="w-full lg:w-1/2 flex flex-col">
+            <span className="overline-text text-google-green mb-6">THE PROBLEM</span>
+            <h2 className="text-[100px] lg:text-[160px] font-[900] leading-[0.85] tracking-[-2px] text-[#f9ab00] m-0">
+              200
+            </h2>
+            <h2 className="text-[56px] lg:text-[80px] font-[900] leading-[1] tracking-[-2px] text-[#f9ab00] m-0">
+              DECISIONS
+            </h2>
+            <h2 className="text-[56px] lg:text-[80px] font-[900] leading-[1] tracking-[-2px] text-[#00c853] m-0">
+              PER MATCH.
+            </h2>
+          </div>
+          <div className="w-full lg:w-1/2 flex items-center lg:px-12">
+            <p className="text-[18px] text-[#9e9e9e] leading-[1.8] max-w-[400px]">
+              Each one in under 30 seconds.<br/>
+              One wrong call ends the season.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3 - How It Works */}
+      <section className="w-full bg-white px-8 lg:px-24 py-32 flex flex-col">
+        <div className="w-full max-w-7xl mx-auto">
+          <span className="overline-text text-google-green mb-6 block">HOW IT WORKS</span>
+          <h2 className="text-[48px] lg:text-[64px] font-[900] leading-[1.1] tracking-[-2px] text-[#1a1a1a] mb-16">
+            Input. Debate.<br/>Decide.
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="relative bg-[#f9ab00]/40 rounded-[16px] p-8 overflow-hidden">
+              <div className="absolute -top-4 -right-4 text-[96px] font-[900] text-google-blue opacity-15 select-none leading-none">01</div>
+              <h3 className="relative z-10 text-[20px] font-[700] text-[#1a1a1a] mb-4 mt-16">Provide Context</h3>
+              <p className="relative z-10 text-[15px] text-[#00c853] leading-[1.7]">
+                Feed in match state, current over, ball events, and custom notes. Or use our screenshot tool.
+              </p>
+            </div>
+            <div className="relative bg-[#f9ab00]/40 rounded-[16px] p-8 overflow-hidden">
+              <div className="absolute -top-4 -right-4 text-[96px] font-[900] text-google-green opacity-15 select-none leading-none">02</div>
+              <h3 className="relative z-10 text-[20px] font-[700] text-[#1a1a1a] mb-4 mt-16">Agents Debate</h3>
+              <p className="relative z-10 text-[15px] text-[#00c853] leading-[1.7]">
+                Stats, Strategist, and Devil's Advocate argue internally to expose flaws in initial plans.
+              </p>
+            </div>
+            <div className="relative bg-[#f9ab00]/40 rounded-[16px] p-8 overflow-hidden">
+              <div className="absolute -top-4 -right-4 text-[96px] font-[900] text-google-yellow opacity-15 select-none leading-none">03</div>
+              <h3 className="relative z-10 text-[20px] font-[700] text-[#1a1a1a] mb-4 mt-16">Actionable Output</h3>
+              <p className="relative z-10 text-[15px] text-[#00c853] leading-[1.7]">
+                Commentator synthesizes the final strategy with confidence scores and counterfactuals.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 4 - The Agents */}
+      <section className="w-full bg-white px-8 lg:px-24 pb-32 flex flex-col">
+        <div className="w-full max-w-7xl mx-auto">
+          <h2 className="text-[48px] lg:text-[64px] font-[900] leading-[1.1] tracking-[-2px] mb-12">
+            <span className="text-[#1a1a1a]">FIVE </span>
+            <span className="text-google-blue">AGENTS.</span>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Stats */}
+            <div className="bg-white border-[2px] border-[#f1f3f4] rounded-[16px] p-6 hover:border-google-blue hover:-translate-y-1 transition-all flex flex-col justify-between h-[200px]">
+              <div>
+                <div className="flex justify-between items-start mb-4">
+                  <span className="text-[32px] leading-none">📊</span>
+                  <span className="bg-[#f1f3f4] text-[#00c853] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-flash</span>
+                </div>
+                <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Stats Analyst</h4>
+                <p className="text-[13px] text-[#00c853]">Crunches historical data & win probs.</p>
+              </div>
+              <div><span className="bg-google-blue text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">INTELLIGENCE</span></div>
+            </div>
+
+            {/* Strategist */}
+            <div className="bg-white border-[2px] border-[#f1f3f4] rounded-[16px] p-6 hover:border-google-green hover:-translate-y-1 transition-all flex flex-col justify-between h-[200px]">
+              <div>
+                <div className="flex justify-between items-start mb-4">
+                  <span className="text-[32px] leading-none">🧠</span>
+                  <span className="bg-google-blue text-[#f9ab00] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-pro</span>
+                </div>
+                <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Strategist</h4>
+                <p className="text-[13px] text-[#00c853]">Builds primary tactical plans.</p>
+              </div>
+              <div><span className="bg-google-green text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">DECISION</span></div>
+            </div>
+
+            {/* Devil */}
+            <div className="bg-white border-[2px] border-[#f1f3f4] rounded-[16px] p-6 hover:border-google-red hover:-translate-y-1 transition-all flex flex-col justify-between h-[200px]">
+              <div>
+                <div className="flex justify-between items-start mb-4">
+                  <span className="text-[32px] leading-none">⚔️</span>
+                  <span className="bg-[#f1f3f4] text-[#00c853] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-flash</span>
+                </div>
+                <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Devil's Advocate</h4>
+                <p className="text-[13px] text-[#00c853]">Challenges strategies, identifies risks.</p>
+              </div>
+              <div><span className="bg-google-red text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">CHALLENGE</span></div>
+            </div>
+
+            {/* Strategist 2 */}
+            <div className="bg-white border-[2px] border-[#f1f3f4] rounded-[16px] p-6 hover:border-google-yellow hover:-translate-y-1 transition-all flex flex-col justify-between h-[200px]">
+              <div>
+                <div className="flex justify-between items-start mb-4">
+                  <span className="text-[32px] leading-none">🔄</span>
+                  <span className="bg-google-blue text-[#f9ab00] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-pro</span>
+                </div>
+                <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Strategist Round 2</h4>
+                <p className="text-[13px] text-[#00c853]">Refines response after critique.</p>
+              </div>
+              <div><span className="bg-google-yellow text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">REVISION</span></div>
+            </div>
+
+            {/* Commentator */}
+            <div className="bg-white border-[2px] border-[#f1f3f4] rounded-[16px] p-6 hover:border-[var(--purple-accent)] hover:-translate-y-1 transition-all flex flex-col justify-between h-[200px]">
+              <div>
+                <div className="flex justify-between items-start mb-4">
+                  <span className="text-[32px] leading-none">🎙️</span>
+                  <span className="bg-[#f1f3f4] text-[#00c853] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-flash</span>
+                </div>
+                <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Commentator</h4>
+                <p className="text-[13px] text-[#00c853]">Final verdict and narrative synthesis.</p>
+              </div>
+              <div><span className="bg-google-purple text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full" style={{ backgroundColor: 'var(--purple-accent)' }}>NARRATIVE</span></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5 - Sample Output */}
+      <section className="w-full bg-[#f9ab00]/40 px-8 lg:px-24 py-32 flex flex-col items-center">
+        <h2 className="text-[40px] lg:text-[56px] font-[800] text-[#1a1a1a] tracking-[-1.5px] mb-2 text-center">
+          See it in action.
+        </h2>
+        <p className="text-[20px] lg:text-[24px] text-[#00c853] mb-16 text-center">
+          MI vs CSK. Over 18. Dhoni on strike.
         </p>
 
-        <div className="relative z-10 text-center max-w-4xl">
-          <h2
-            className={`text-[36px] md:text-[48px] font-bold text-white leading-tight transition-all duration-700 ${revealClass}`}
-            style={{ transitionDelay: '80ms' }}
-          >
-            200 decisions per match.
+        <div className="w-full max-w-[800px] flex flex-col gap-4">
+          <div className="bg-white rounded-r-[12px] border-l-[4px] border-google-blue p-6 lg:p-8 shadow-sm">
+            <div className="text-[11px] font-[600] uppercase tracking-[2px] text-google-blue mb-3">STATS ANALYST</div>
+            <p className="font-mono text-[14px] leading-[1.8] text-[#1a1a1a]">
+              "Dhoni SR vs Pace off: 145. SR vs Yorker: 92. Projected edge heavily favors wide yorkers over cutters."
+            </p>
+          </div>
+          <div className="bg-white rounded-r-[12px] border-l-[4px] border-google-red p-6 lg:p-8 shadow-sm relative ml-0 lg:ml-12">
+            <div className="text-[11px] font-[600] uppercase tracking-[2px] text-google-red mb-3">DEVIL'S ADVOCATE</div>
+            <p className="font-mono text-[14px] leading-[1.8] text-[#1a1a1a]">
+              "Miss a wide yorker and it's a guaranteed boundary given point is up. He is anticipating the wide line. Don't be predictable."
+            </p>
+          </div>
+          <div className="bg-white rounded-r-[12px] border-l-[4px] border-google-green p-6 lg:p-8 shadow-sm">
+            <div className="text-[11px] font-[600] uppercase tracking-[2px] text-google-green mb-3">STRATEGIST R2</div>
+            <p className="font-mono text-[14px] leading-[1.8] text-[#1a1a1a]">
+              "Adjust field: push third man deep. Bowl hard length at the body first ball to jam him, then wide yorker once he shifts weight."
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-16">
+          <Link to="/analyze" className="bg-[#0d0d0d] text-[#f9ab00] rounded-full px-8 py-3.5 text-[15px] font-[600] hover:bg-google-blue transition-colors">
+            Try it live →
+          </Link>
+        </div>
+      </section>
+
+      {/* SECTION 6 - Tech Stack */}
+      <section className="w-full bg-white px-8 lg:px-24 py-32 flex flex-col items-center">
+        <span className="text-[11px] font-[600] uppercase tracking-[2px] text-[#00c853] mb-8">BUILT ON</span>
+        <div className="flex flex-wrap justify-center gap-4 max-w-4xl">
+          <span className="btn-pill-outline">React</span>
+          <span className="btn-pill-outline">Tailwind</span>
+          <span className="btn-pill-outline">Gemini 2.5 Pro</span>
+          <span className="btn-pill-outline">Gemini 2.5 Flash</span>
+          <span className="btn-pill-outline">Agentic Design Kit (ADK)</span>
+        </div>
+        <p className="text-[12px] text-[#9e9e9e] mt-12">
+          Zero OpenAI. Zero Anthropic. Pure Google.
+        </p>
+      </section>
+
+      {/* SECTION 7 - Final CTA */}
+      <section className="relative w-full h-[80vh] min-h-[600px] bg-[#0d0d0d] px-8 py-32 flex flex-col items-center justify-center overflow-hidden">
+        {/* Floating Shapes */}
+        <div className="circle-shape bg-google-blue opacity-80" style={{ width: '300px', height: '300px', bottom: '-100px', right: '-100px' }} />
+        <div className="pill-shape bg-google-green opacity-90" style={{ width: '120px', height: '30px', top: '15%', left: '10%', transform: 'rotate(-15deg)' }} />
+
+        <div className="relative z-10 flex flex-col items-center text-center">
+          <h2 className="text-[48px] lg:text-[64px] font-[300] italic text-[#f9ab00] m-0 leading-tight">
+            Cricket is a
           </h2>
-          <p
-            className={`mt-6 text-[20px] md:text-[24px] text-[#9e9e9e] leading-relaxed transition-all duration-700 ${revealClass}`}
-            style={{ transitionDelay: '260ms' }}
-          >
-            Each one in under 30 seconds.
-            <br />
-            One wrong call ends the season.
+          <h2 className="text-[48px] lg:text-[64px] font-[900] text-google-blue m-0 leading-tight tracking-[-1.5px]">
+            captain's game.
+          </h2>
+          
+          <p className="text-[18px] lg:text-[20px] text-[#9e9e9e] mt-6 mb-12">
+            We built the captain's second brain.
+          </p>
+
+          <Link to="/analyze" className="bg-white text-[#f9ab00] rounded-full px-12 py-4 text-[18px] font-[700] hover:bg-google-blue hover:text-[#f9ab00] transition-all">
+            Make the Call →
+          </Link>
+
+          <p className="text-[12px] text-[#00c853] mt-12 pt-8">
+            Built for APL 2026 · Powered by Google Gemini
           </p>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="w-full max-w-5xl py-20 px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            { step: '1', title: 'Context Gathering', desc: 'Inputs match context, weather, and ball-by-ball data.' },
-            { step: '2', title: 'Agent Debate', desc: '5 specialized agents debate strategies, stats, and counterfactuals.' },
-            { step: '3', title: 'Final Strategy', desc: 'Commentator synthesizes the debate into actionable insights.' }
-          ].map((item) => (
-            <div key={item.step} className="bg-card p-6 rounded-xl border border-white/10 flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-primary/20 text-primary rounded-full flex items-center justify-center text-xl font-bold mb-4">
-                {item.step}
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-              <p className="text-textMuted">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Agent Cards (Roles) */}
-      <section ref={strategistSectionRef} className="w-full max-w-5xl py-20 px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">The Strategists</h2>
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {strategistCards.map((agent, index) => (
-            <div
-              key={agent.name}
-              className={`relative bg-card p-6 rounded-xl border border-white/10 transition-all duration-500 ${visibleStrategistCards > index ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-              style={{ borderLeft: `4px solid ${agent.accent}` }}
-            >
-              <span
-                className="absolute top-4 right-4 px-2.5 py-1 text-xs rounded-full font-semibold text-white"
-                style={{ backgroundColor: agent.modelBg }}
-              >
-                {agent.model}
-              </span>
-              <h3 className="text-lg font-bold text-textMain mb-2 pr-28">{agent.name}</h3>
-              <p className="text-sm text-textMuted">{agent.blurb}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Demo Preview */}
-      <section className="w-full max-w-5xl py-16 px-4">
-        <h2 className="text-3xl font-bold text-center mb-3">See It In Action</h2>
-        <p className="text-textMuted text-center mb-10">MI vs CSK over 18 demo scenario.</p>
-        <div className="max-w-3xl mx-auto space-y-4">
-          <div className="bg-card border border-white/10 rounded-xl p-4 border-l-4" style={{ borderLeftColor: '#1565c0' }}>
-            <h3 className="font-semibold text-sm mb-2">Stats Analyst</h3>
-            <p className="font-mono text-xs text-textMuted whitespace-pre-line">Win Prob: 70.3% (CSK) - trending upwards.
-Dhoni SR 121.4 vs career high-leverage 205+.
-Anomaly: boundary cluster incoming.</p>
-          </div>
-          <div className="bg-card border border-white/10 rounded-xl p-4 border-l-4" style={{ borderLeftColor: '#00e676' }}>
-            <h3 className="font-semibold text-sm mb-2">Strategist</h3>
-            <p className="font-mono text-xs text-textMuted whitespace-pre-line">DECISION: Bumrah bowls the 19th. Hard lengths
-into the body, wide-line yorkers at the death.
-REASONING: The 19th over determines 82% of
-outcomes at Wankhede...</p>
-          </div>
-          <div className="border border-[#ef5350]/40 rounded-xl p-4 border-l-4 bg-[#1a0a0a]" style={{ borderLeftColor: '#ef5350' }}>
-            <h3 className="font-semibold text-sm mb-2 text-danger">Devil&apos;s Advocate</h3>
-            <p className="font-mono text-xs text-[#c18a8a] whitespace-pre-line">PHASE BLINDNESS. Burning Bumrah in the 19th
-ensures the 20th is decided by a bowler with
-an 11.8 death economy...</p>
-          </div>
-        </div>
-        <div className="text-center mt-8">
-          <Link
-            to="/analyze"
-            className="inline-flex items-center gap-2 bg-accent hover:bg-accent/85 text-black font-semibold px-6 py-3 rounded-lg transition-colors"
-          >
-            Try It Live →
-          </Link>
-          <p className="text-textMuted text-sm mt-3">Real output. Real agents. Real debate.</p>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section
-        ref={finalCtaSectionRef}
-        className="w-full min-h-screen flex items-center justify-center px-4"
-        style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0f1923 100%)' }}
-      >
-        <div className={`text-center max-w-4xl transition-all duration-700 ${finalCtaRevealClass}`}>
-          <p className="text-[44px] md:text-[64px] font-semibold italic text-white">Cricket is a captain&apos;s game.</p>
-          <p className="text-[20px] md:text-[24px] text-[#9e9e9e] mt-5">We built the captain&apos;s second brain.</p>
-          <Link
-            to="/analyze"
-            className="inline-block mt-10 bg-primary hover:bg-primary/85 text-black font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-primary/50 transition-all text-lg cta-hover-glow"
-          >
-            MAKE THE CALL →
-          </Link>
-          <p className="text-[#616161] mt-4 text-[14px]">Built for APL 2026. Powered by Gemini.</p>
-        </div>
-      </section>
     </div>
   );
 };

@@ -1,28 +1,27 @@
 const stackItems = [
-  { name: 'Google Gemini 2.5', mark: 'G', color: 'bg-[#1a73e8]' },
-  { name: 'Google ADK', mark: 'A', color: 'bg-[#34a853]' },
-  { name: 'Vertex AI', mark: 'V', color: 'bg-[#4285f4]' },
-  { name: 'Firebase Studio', mark: 'F', color: 'bg-[#f9ab00]' },
-  { name: 'Google AI Studio', mark: 'S', color: 'bg-[#ea4335]' },
+  "Google Gemini 2.5",
+  "Google ADK",
+  "Vertex AI",
+  "Firebase Studio",
+  "Google AI Studio"
 ];
 
 const TechStackStrip = () => {
   return (
-    <div className="w-full bg-[#0b1118] border-y border-white/10 py-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 flex flex-wrap justify-center gap-4 md:gap-6 font-mono text-sm">
+    <div className="w-full flex flex-col items-center">
+      <div className="overline-label mb-6 text-[var(--text-muted)] text-center">BUILT ENTIRELY ON</div>
+      <div className="max-w-[1200px] w-full px-4 flex flex-wrap justify-center gap-4">
         {stackItems.map((item) => (
           <div
-            key={item.name}
-            className="group flex items-center gap-3 rounded-full border border-white/10 bg-card/70 px-4 py-2 transition-all hover:border-primary/70 hover:bg-card"
+            key={item}
+            className="rounded-[100px] border border-[rgba(255,255,255,0.08)] px-[20px] py-[8px] text-[13px] text-[var(--text-secondary)] transition-colors hover:border-[rgba(255,255,255,0.2)] hover:text-[var(--text-primary)]"
           >
-            <span
-              className={`h-8 w-8 rounded-full ${item.color} text-black font-bold grid place-items-center filter grayscale group-hover:grayscale-0 transition`}
-            >
-              {item.mark}
-            </span>
-            <span className="text-textMuted transition-colors group-hover:text-textMain">{item.name}</span>
+            {item}
           </div>
         ))}
+      </div>
+      <div className="text-[12px] text-[var(--text-muted)] mt-5 text-center">
+        Zero OpenAI. Zero Anthropic.
       </div>
     </div>
   );

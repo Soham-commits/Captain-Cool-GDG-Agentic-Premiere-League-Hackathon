@@ -1,51 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
-
 @layer base {
   :root {
-    color-scheme: dark;
+    --white: #ffffff;
+    --black: #0d0d0d;
+    --blue: #1a73e8;
+    --green: #00c853;
+    --yellow: #f9ab00;
+    --red: #ea4335;
+    
+    --text-primary: #1a1a1a;
+    --text-muted: #5f6368;
+    
+    --bg-light: #f8f9fa;
+    --bg-section-dark: #0d0d0d;
+    
+    --purple-accent: #9c27b0; /* Commentator for Analyze */
   }
 
   body {
-    @apply bg-background text-textMain font-inter;
-    margin: 0;
-    min-height: 100vh;
-  }
-
-  #root {
+    background-color: var(--white);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
   }
 }
 
-@layer utilities {
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+@layer components {
+  .pill-shape {
+    @apply absolute rounded-full;
+    pointer-events: none;
+  }
+  .circle-shape {
+    @apply absolute rounded-full;
+    pointer-events: none;
+  }
+  .pill-stat {
+    @apply rounded-full px-6 py-2.5 text-[13px] font-semibold tracking-wide inline-flex items-center justify-center;
+  }
+  
+  .btn-dark {
+    @apply bg-[var(--black)] text-[var(--white)] rounded-full px-9 py-4 text-[16px] font-semibold transition-colors;
+  }
+  .btn-dark:hover {
+    @apply bg-[var(--blue)];
   }
 
-  @keyframes ballSpin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  .btn-pill-outline {
+    @apply rounded-full border-[1.5px] border-[#dadce0] px-6 py-2.5 text-[13px] text-[#5f6368] font-medium transition-colors bg-white;
+  }
+  .btn-pill-outline:hover {
+    @apply border-[var(--blue)] text-[var(--blue)];
   }
 
-  .ball-spin {
-    animation: ballSpin 0.8s linear infinite;
-  }
-
-  .cta-hover-glow:hover {
-    box-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
+  .overline-text {
+    @apply text-[11px] font-semibold tracking-[3px] uppercase;
   }
 }

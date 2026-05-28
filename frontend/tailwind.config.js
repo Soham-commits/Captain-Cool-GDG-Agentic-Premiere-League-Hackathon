@@ -7,13 +7,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0a0a0a',
-        primary: '#00e676',
-        card: '#0f1923',
-        accent: '#ff6d00',
-        danger: '#ef5350',
-        textMain: '#e0e0e0',
-        textMuted: '#616161',
+        google: {
+          blue: 'var(--blue)',
+          green: 'var(--green)',
+          yellow: 'var(--yellow)',
+          red: 'var(--red)',
+          black: 'var(--black)',
+          white: 'var(--white)',
+          purple: 'var(--purple-accent)'
+        },
+        background: 'var(--white)',
+        card: '#ffffff',
+        textMain: 'var(--text-primary)',
+        textMuted: 'var(--text-muted)',
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
@@ -23,4 +29,3 @@ export default {
   },
   plugins: [],
 }
-

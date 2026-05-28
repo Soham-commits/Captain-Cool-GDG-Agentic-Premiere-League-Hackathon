@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import DebatePanel, { type DebateResults } from '../components/DebatePanel';
 import MatchInputForm, { type MatchFormSubmitData } from '../components/MatchInputForm';
+import DebatePanel, { type DebateResults } from '../components/DebatePanel';
 
 const buildMockDebate = (data: MatchFormSubmitData): DebateResults => {
   const contextHint =
@@ -12,40 +12,40 @@ const buildMockDebate = (data: MatchFormSubmitData): DebateResults => {
     agents: [
       {
         id: 'stats',
-        name: '📊 Stats Analyst',
+        name: 'Stats Analyst',
         model: 'gemini-2.5-flash',
-        accentColor: '#1565c0',
+        accentColor: 'var(--blue)',
         output: `Pressure window identified: ${contextHint}. Yorker execution + boundary denial keeps projected edge around 58-63%.`,
       },
       {
         id: 'strategist',
-        name: '🧠 Strategist',
-        model: 'gemini-2.5-flash',
-        accentColor: '#00e676',
+        name: 'Strategist',
+        model: 'gemini-2.5-pro',
+        accentColor: 'var(--green)',
         output:
           'Primary plan: force batsman to hit against the larger side, hold one elite over for the final six balls, and protect straight boundaries with pace-off variation.',
       },
       {
         id: 'devil',
-        name: "⚔️ Devil's Advocate",
+        name: "Devil's Advocate",
         model: 'gemini-2.5-flash',
-        accentColor: '#ef5350',
+        accentColor: 'var(--red)',
         output:
           'Risk alert: over-committing to slower balls lets experienced finishers premeditate. One missed length could swing the chase in two deliveries.',
       },
       {
         id: 'strategist2',
-        name: '🔄 Strategist Round 2',
-        model: 'gemini-2.5-flash',
-        accentColor: '#ff8f00',
+        name: 'Strategist Round 2',
+        model: 'gemini-2.5-pro',
+        accentColor: 'var(--yellow)',
         output:
           'Revision: mix hard length at body with occasional yorker, keep deep third man finer, and preserve matchup flexibility if an impact player enters.',
       },
       {
         id: 'commentator',
-        name: '🎙️ Commentator',
+        name: 'Commentator',
         model: 'gemini-2.5-flash',
-        accentColor: '#7b1fa2',
+        accentColor: '#9c27b0', // purple
         output: 'Final synthesis complete.',
       },
     ],
@@ -53,7 +53,7 @@ const buildMockDebate = (data: MatchFormSubmitData): DebateResults => {
     confidence: 72,
     counterfactual: {
       scenario: 'If dew rises one level and yorker accuracy drops, switch earlier to wide-line pace-off with two sweepers.',
-      shift: -8.5,
+      shift: 8,
     },
     dissentCore:
       'If the striker has already calibrated slower balls, the conservative field becomes predictable; attack stumps for a two-ball wicket chance.',
@@ -101,15 +101,30 @@ const Analyze = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8">
-      {/* Left Panel: Match Input */}
-      <div className="w-full">
-        <MatchInputForm onSubmit={handleAnalyze} isLoading={isLoading} />
-      </div>
+    <div className="w-full flex flex-col bg-[#0d0d0d] min-h-[calc(100vh-64px)] text-white">
+      {/* Colored Top Border Strip */}
+      <div 
+        className="w-full h-[4px]" 
+        style={{ background: 'linear-gradient(90deg, #1a73e8, #00c853, #f9ab00, #ea4335)' }}
+      />
       
-      {/* Right Panel: Debate Reveal */}
-      <div className="w-full bg-card border border-white/10 rounded-xl p-5 min-h-[500px]">
-        <DebatePanel isLoading={isLoading} activeStep={activeStep} results={results} />
+      <div className="flex flex-col lg:flex-row flex-1">
+        {/* LEFT COLUMN: Input Form (40%) */}
+        <div className="w-full lg:w-[40%] bg-[#161616] border-r border-[rgba(255,255,255,0.06)] p-[48px] overflow-y-auto">
+          <MatchInputForm
+            onSubmit={handleAnalyze}
+            isLoading={isLoading}
+          />
+        </div>
+
+        {/* RIGHT COLUMN: Debate Panel (60%) */}
+        <div className="w-full lg:w-[60%] bg-[#0d0d0d] p-[48px] overflow-y-auto relative">
+          <DebatePanel
+            isLoading={isLoading}
+            activeStep={activeStep}
+            results={results}
+          />
+        </div>
       </div>
     </div>
   );

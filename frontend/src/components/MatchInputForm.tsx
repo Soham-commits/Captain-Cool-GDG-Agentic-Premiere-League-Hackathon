@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-type MatchInputFormProps = {
+export type MatchInputFormProps = {
   onSubmit: (data: MatchFormSubmitData) => void;
   isLoading: boolean;
 };
@@ -37,12 +37,12 @@ const MatchInputForm = ({ onSubmit, isLoading }: MatchInputFormProps) => {
     innings: '2nd',
     over: 18,
     ball: 1,
-    currentScore: '156/3',
+    currentScore: '156',
     wicketsLost: 3,
     target: 181,
     requiredRunRate: 12.5,
-    striker: 'MS Dhoni 34* off 28',
-    nonStriker: 'Ravindra Jadeja 12* off 8',
+    striker: 'MS Dhoni',
+    nonStriker: 'Ravindra Jadeja',
     bowlersRemaining: 'Bumrah: 2 overs\nChahal: 1 over',
     pitch: 'Flat',
     venue: 'Wankhede Stadium',
@@ -60,236 +60,201 @@ const MatchInputForm = ({ onSubmit, isLoading }: MatchInputFormProps) => {
       onSubmit({ type: 'form', payload: formState });
       return;
     }
-
     onSubmit({ type: activeTab, payload: textInput });
   };
 
-  const inputCls = 'w-full bg-[#091017] border border-white/10 rounded-lg p-3 text-textMain focus:ring-2 focus:ring-primary outline-none';
+  const inputCls = 'w-full bg-[#1b1b1b] border border-[rgba(255,255,255,0.06)] rounded-[8px] px-[14px] py-[10px] text-[#e1e3e1] text-[14px] focus:border-[rgba(255,255,255,0.2)] focus:outline-none transition-colors';
+  const labelCls = 'text-[10px] font-medium tracking-[1.5px] uppercase text-[var(--green-primary)] mb-[12px] block';
 
   return (
-    <div className="bg-card p-6 rounded-xl border border-white/10">
-      <h2 className="text-2xl font-bold mb-6">Match Context</h2>
+    <div className="w-full text-left">
+      <h2 className="text-[20px] font-semibold text-white mb-6">Match Context</h2>
       
-      <div className="flex flex-col sm:flex-row gap-2 mb-6 bg-[#091017] p-1 rounded-lg border border-white/10">
+      <div className="flex gap-6 mb-8 border-b border-[var(--border-subtle)] pb-2">
         {['form', 'url', 'screenshot'].map((tab) => (
           <button
             key={tab}
             type="button"
-            className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === tab ? 'bg-[#1b2a39] text-textMain' : 'text-textMuted hover:text-textMain'
+            className={`pb-2 text-[15px] transition-colors relative ${
+              activeTab === tab ? 'text-[#f5f5f5] font-semibold' : 'text-[#616161]'
             }`}
             onClick={() => setActiveTab(tab as any)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {activeTab === tab && (
+              <span className="absolute bottom-[-2px] left-0 w-full h-[2px] bg-[var(--green-primary)]" />
+            )}
           </button>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-[28px]">
         {activeTab === 'form' && (
-          <div className="space-y-6">
+          <>
             <div>
-              <h3 className="text-sm font-semibold tracking-wide text-primary mb-3">MATCH SITUATION</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <label className="text-sm text-textMuted">
-                  Innings
-                  <select
-                    className={`${inputCls} mt-1`}
-                    value={formState.innings}
-                    onChange={(e) => updateField('innings', e.target.value as InningsType)}
-                  >
-                    <option value="1st">1st</option>
-                    <option value="2nd">2nd</option>
-                  </select>
-                </label>
-                <label className="text-sm text-textMuted">
-                  Over
-                  <input
-                    type="number"
-                    min={1}
-                    max={20}
-                    className={`${inputCls} mt-1`}
-                    value={formState.over}
-                    onChange={(e) => updateField('over', Number(e.target.value))}
-                    required
-                  />
-                </label>
-                <label className="text-sm text-textMuted">
-                  Ball
-                  <input
-                    type="number"
-                    min={1}
-                    max={6}
-                    className={`${inputCls} mt-1`}
-                    value={formState.ball}
-                    onChange={(e) => updateField('ball', Number(e.target.value))}
-                    required
-                  />
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold tracking-wide text-primary mb-3">SCORE</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label className="text-sm text-textMuted">
-                  Current Score
-                  <input
-                    type="text"
-                    className={`${inputCls} mt-1`}
-                    value={formState.currentScore}
-                    onChange={(e) => updateField('currentScore', e.target.value)}
-                    placeholder="156/3"
-                    required
-                  />
-                </label>
-                <label className="text-sm text-textMuted">
-                  Wickets Lost
-                  <input
-                    type="number"
-                    min={0}
-                    max={10}
-                    className={`${inputCls} mt-1`}
-                    value={formState.wicketsLost}
-                    onChange={(e) => updateField('wicketsLost', Number(e.target.value))}
-                    required
-                  />
-                </label>
-                {formState.innings === '2nd' && (
-                  <>
-                    <label className="text-sm text-textMuted">
-                      Target
-                      <input
-                        type="number"
-                        min={1}
-                        className={`${inputCls} mt-1`}
-                        value={formState.target}
-                        onChange={(e) => updateField('target', Number(e.target.value))}
-                        required
-                      />
-                    </label>
-                    <label className="text-sm text-textMuted">
-                      Required Run Rate
-                      <input
-                        type="number"
-                        min={0}
-                        step="0.1"
-                        className={`${inputCls} mt-1`}
-                        value={formState.requiredRunRate}
-                        onChange={(e) => updateField('requiredRunRate', Number(e.target.value))}
-                        required
-                      />
-                    </label>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold tracking-wide text-primary mb-3">PLAYERS</h3>
-              <div className="grid grid-cols-1 gap-3">
-                <label className="text-sm text-textMuted">
-                  Striker
-                  <input
-                    type="text"
-                    className={`${inputCls} mt-1`}
-                    value={formState.striker}
-                    onChange={(e) => updateField('striker', e.target.value)}
-                    required
-                  />
-                </label>
-                <label className="text-sm text-textMuted">
-                  Non-Striker
-                  <input
-                    type="text"
-                    className={`${inputCls} mt-1`}
-                    value={formState.nonStriker}
-                    onChange={(e) => updateField('nonStriker', e.target.value)}
-                    required
-                  />
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold tracking-wide text-primary mb-3">BOWLING ATTACK</h3>
-              <label className="text-sm text-textMuted">
-                Bowlers Remaining
-                <textarea
-                  className={`${inputCls} mt-1 h-24`}
-                  value={formState.bowlersRemaining}
-                  onChange={(e) => updateField('bowlersRemaining', e.target.value)}
-                  placeholder="Bumrah: 2 overs\nChahal: 1 over"
+              <span className={labelCls}>MATCH SITUATION</span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <select
+                  className={inputCls}
+                  value={formState.innings}
+                  onChange={(e) => updateField('innings', e.target.value as InningsType)}
+                >
+                  <option value="1st">1st Innings</option>
+                  <option value="2nd">2nd Innings</option>
+                </select>
+                <input
+                  type="number"
+                  min={1} max={20}
+                  placeholder="Over"
+                  className={inputCls}
+                  value={formState.over}
+                  onChange={(e) => updateField('over', Number(e.target.value))}
                   required
                 />
-              </label>
+                <input
+                  type="number"
+                  min={1} max={6}
+                  placeholder="Ball"
+                  className={inputCls}
+                  value={formState.ball}
+                  onChange={(e) => updateField('ball', Number(e.target.value))}
+                  required
+                />
+              </div>
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold tracking-wide text-primary mb-3">CONDITIONS</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <label className="text-sm text-textMuted">
-                  Pitch
-                  <select
-                    className={`${inputCls} mt-1`}
-                    value={formState.pitch}
-                    onChange={(e) => updateField('pitch', e.target.value as PitchType)}
-                  >
-                    <option value="Flat">Flat</option>
-                    <option value="Turning">Turning</option>
-                    <option value="Two-paced">Two-paced</option>
-                  </select>
-                </label>
-                <label className="text-sm text-textMuted sm:col-span-2">
-                  Venue
+              <span className={labelCls}>SCORE</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <input
+                  type="text"
+                  placeholder="Current Score (e.g. 156/3)"
+                  className={inputCls}
+                  value={formState.currentScore}
+                  onChange={(e) => updateField('currentScore', e.target.value)}
+                  required
+                />
+                <input
+                  type="number"
+                  min={0} max={10}
+                  placeholder="Wickets Lost"
+                  className={inputCls}
+                  value={formState.wicketsLost}
+                  onChange={(e) => updateField('wicketsLost', Number(e.target.value))}
+                  required
+                />
+              </div>
+              {formState.innings === '2nd' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <input
-                    type="text"
-                    className={`${inputCls} mt-1`}
-                    value={formState.venue}
-                    onChange={(e) => updateField('venue', e.target.value)}
+                    type="number"
+                    min={1}
+                    placeholder="Target"
+                    className={inputCls}
+                    value={formState.target}
+                    onChange={(e) => updateField('target', Number(e.target.value))}
                     required
                   />
-                </label>
+                  <input
+                    type="number"
+                    min={0} step="0.1"
+                    placeholder="Required Run Rate"
+                    className={inputCls}
+                    value={formState.requiredRunRate}
+                    onChange={(e) => updateField('requiredRunRate', Number(e.target.value))}
+                    required
+                  />
+                </div>
+              )}
+            </div>
+
+            <div>
+              <span className={labelCls}>PLAYERS</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  placeholder="Striker"
+                  className={inputCls}
+                  value={formState.striker}
+                  onChange={(e) => updateField('striker', e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Non-Striker"
+                  className={inputCls}
+                  value={formState.nonStriker}
+                  onChange={(e) => updateField('nonStriker', e.target.value)}
+                  required
+                />
               </div>
-              <label className="text-sm text-textMuted block mt-3">
-                Dew Factor
+            </div>
+
+            <div>
+              <span className={labelCls}>BOWLING ATTACK</span>
+              <textarea
+                className={`${inputCls} h-[100px] resize-none`}
+                value={formState.bowlersRemaining}
+                onChange={(e) => updateField('bowlersRemaining', e.target.value)}
+                placeholder="Bowlers Remaining (e.g. Bumrah: 2 overs)"
+                required
+              />
+            </div>
+
+            <div>
+              <span className={labelCls}>CONDITIONS</span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <select
-                  className={`${inputCls} mt-1`}
+                  className={inputCls}
+                  value={formState.pitch}
+                  onChange={(e) => updateField('pitch', e.target.value as PitchType)}
+                >
+                  <option value="Flat">Flat Pitch</option>
+                  <option value="Turning">Turning Pitch</option>
+                  <option value="Two-paced">Two-paced Pitch</option>
+                </select>
+                <select
+                  className={inputCls}
                   value={formState.dewFactor}
                   onChange={(e) => updateField('dewFactor', e.target.value as DewFactor)}
                 >
-                  <option value="Low">Low</option>
-                  <option value="Medium">Medium</option>
-                  <option value="High">High</option>
+                  <option value="Low">Low Dew</option>
+                  <option value="Medium">Medium Dew</option>
+                  <option value="High">High Dew</option>
                 </select>
-              </label>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold tracking-wide text-primary mb-3">TACTICAL</h3>
-              <div className="flex items-center justify-between rounded-lg border border-white/10 bg-[#091017] p-3">
-                <span className="text-sm text-textMuted">Impact Player Available</span>
-                <button
-                  type="button"
-                  onClick={() => updateField('impactPlayerAvailable', !formState.impactPlayerAvailable)}
-                  className={`h-7 w-14 rounded-full p-1 transition-colors ${formState.impactPlayerAvailable ? 'bg-primary/40' : 'bg-white/10'}`}
-                >
-                  <span
-                    className={`block h-5 w-5 rounded-full transition-transform ${formState.impactPlayerAvailable ? 'translate-x-7 bg-primary' : 'translate-x-0 bg-textMuted'}`}
-                  />
-                </button>
+                <input
+                  type="text"
+                  placeholder="Venue"
+                  className={inputCls}
+                  value={formState.venue}
+                  onChange={(e) => updateField('venue', e.target.value)}
+                  required
+                />
               </div>
             </div>
-          </div>
+
+            <div className="flex items-center mt-2">
+              <input
+                type="checkbox"
+                id="impactPlayer"
+                className="mr-3 h-5 w-5 accent-[var(--green-primary)] rounded border-[var(--border-subtle)] bg-[#1c1c1e]"
+                checked={formState.impactPlayerAvailable}
+                onChange={(e) => updateField('impactPlayerAvailable', e.target.checked)}
+              />
+              <label htmlFor="impactPlayer" className="text-[14px] text-white">
+                Impact Player Available
+              </label>
+            </div>
+          </>
         )}
 
         {activeTab === 'url' && (
           <div>
-            <label className="block text-sm font-medium text-textMuted mb-2">Cricbuzz Match URL</label>
+            <span className={labelCls}>MATCH URL</span>
             <input
               type="url"
               className={inputCls}
-              placeholder="https://www.cricbuzz.com/live-cricket-scores/..."
+              placeholder="https://www.cricbuzz.com/..."
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
               required
@@ -299,25 +264,21 @@ const MatchInputForm = ({ onSubmit, isLoading }: MatchInputFormProps) => {
 
         {activeTab === 'screenshot' && (
           <div>
-            <label className="block text-sm font-medium text-textMuted mb-2">Upload Match Screenshot</label>
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full bg-[#091017] border border-white/10 rounded-lg p-3 text-textMain"
-            />
-            <p className="text-xs text-textMuted mt-2">Will be processed by Gemini Vision</p>
+            <span className={labelCls}>UPLOAD SCREENSHOT</span>
+             <div className="border border-dashed border-[var(--border-subtle)] rounded-lg p-8 text-center text-[var(--text-muted)] mt-2">
+                Drag and drop match screenshot here, or click to browse.
+             </div>
           </div>
         )}
 
         <button
           type="submit"
+          className="btn-primary w-full mt-4"
           disabled={isLoading}
-          className="w-full bg-primary hover:bg-primary/85 text-black font-bold py-3 rounded-lg transition-all mt-6 disabled:opacity-50 cta-hover-glow"
         >
           {isLoading ? (
-            <span className="inline-flex items-center justify-center gap-3">
-              <span className="h-5 w-5 rounded-full border-2 border-black/30 border-t-black animate-spin" />
-              Analyzing...
+            <span className="flex items-center justify-center gap-2">
+              <span className="animate-pulse">Analyzing...</span>
             </span>
           ) : (
             'Analyze Strategies'
