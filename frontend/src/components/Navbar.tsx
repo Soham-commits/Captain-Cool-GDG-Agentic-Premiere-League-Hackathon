@@ -29,35 +29,27 @@ const Navbar = () => {
   const isAbout = location.pathname === '/about';
 
   return (
-    <nav className={`sticky top-0 z-50 p-4 transition-all duration-300 ${navClass}`}>
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold text-[#e1e3e1] hover:text-white transition-colors">
-          Captain Cool
-        </Link>
+    <nav className={`sticky top-4 z-50 w-full transition-all duration-300 ${navClass}`}>
+      <div className="max-w-7xl mx-auto flex items-center justify-center h-24 relative px-6">
+        {/* Centered nav pill (keeps center across pages) */}
+        <div className="nav-pill" style={{ padding: '16px 28px' }}>
+          <Link to="/" className="brand text-xl font-bold">Captain Cool</Link>
+          <Link to="/" className="hidden md:inline-block text-base ml-6 hover:underline">Home</Link>
+          <Link to="/analyze" className="hidden md:inline-block text-base ml-6 hover:underline">Analyze</Link>
+          <Link to="/about" className="hidden md:inline-block text-base ml-6 hover:underline">About</Link>
+        </div>
 
-        <button
-          type="button"
-          className="md:hidden text-[#9e9e9e] border border-white/20 rounded-md px-3 py-1"
-          onClick={() => setIsMenuOpen((prev) => !prev)}
-          aria-label="Toggle menu"
-          aria-expanded={isMenuOpen}
-        >
-          ☰
-        </button>
-
-        <div className="hidden md:flex gap-6 items-center">
-          <Link 
-            to="/analyze" 
-            className={`text-[15px] transition-colors ${isAnalyze ? 'text-white border border-[rgba(255,255,255,0.2)] rounded-full px-4 py-1.5' : 'text-[#9e9e9e] hover:text-white'}`}
+        {/* Mobile menu button on the right */}
+        <div className="absolute right-4">
+          <button
+            type="button"
+            className="md:hidden text-[#9e9e9e] border border-white/20 rounded-md px-3 py-1"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
           >
-            Analyze
-          </Link>
-          <Link 
-            to="/about" 
-            className={`text-[15px] transition-colors ${isAbout ? 'text-white border border-[rgba(255,255,255,0.2)] rounded-full px-4 py-1.5' : 'text-[#9e9e9e] hover:text-white'}`}
-          >
-            About
-          </Link>
+            ☰
+          </button>
         </div>
       </div>
 

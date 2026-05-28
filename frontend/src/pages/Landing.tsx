@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const Landing = () => {
   
@@ -9,77 +9,74 @@ const Landing = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Make sure we pause the video to control manually
-    video.pause();
-
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      
-      if (maxScroll <= 0) return;
-      
-      const scrollProgress = Math.max(0, Math.min(1, scrollTop / maxScroll));
-
-      if (video.duration) {
-        // Optional: you can clamp it slightly below duration so it doesn't end abruptly
-        const targetTime = scrollProgress * video.duration;
-        window.requestAnimationFrame(() => {
-          video.currentTime = targetTime;
-        });
+    // Autoplay/loop the background video for a live feel; keep it muted & inline for mobile.
+    const tryPlay = async () => {
+      try {
+        await video.play();
+      } catch (e) {
+        // some browsers block autoplay; leaving muted and playsInline helps.
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    video.addEventListener('loadedmetadata', handleScroll);
+    tryPlay();
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      video.removeEventListener('loadedmetadata', handleScroll);
+      // no-op cleanup
     };
   }, []);
 
+  // Debug badge to surface video state for troubleshooting
+  const [videoState, setVideoState] = useState({ readyState: 0, time: 0 });
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    const id = setInterval(() => {
+      setVideoState({ readyState: vid.readyState, time: Math.floor(vid.currentTime) });
+    }, 500);
+    return () => clearInterval(id);
+  }, []);
+
   return (
-    <div className="w-full flex flex-col min-h-screen pt-16 lg:pt-0 overflow-x-hidden text-left text-[#f9ab00] bg-transparent">
-      <video 
+    <div className="w-full flex flex-col min-h-screen pt-16 lg:pt-0 overflow-x-hidden text-left text-[#f9ab00] bg-transparent on-video">
+      <video
         ref={videoRef}
-        src="/Stadium.mp4" 
-        className="fixed top-0 left-0 w-full h-full object-cover -z-50 opacity-100"
+        src="/Stadium.mp4"
+        className="fixed inset-0 w-full h-full object-cover z-0 opacity-100"
         preload="auto"
         muted
         playsInline
-        style={{ backgroundColor: 'black' }}
+        autoPlay
+        loop
+        aria-hidden
+        style={{ pointerEvents: 'none' }}
       />
-      <div className="fixed top-0 left-0 w-full h-full -z-40 bg-[#1a73e8]/40 backdrop-blur-[2px] mix-blend-multiply"></div>
+      {/* background overlay removed to reveal video */}
+      {/* debug badge removed */}
       {/* SECTION 1 - Hero */}
       <section className="relative w-full min-h-[90vh] flex items-center justify-start px-8 lg:px-24 py-24 overflow-hidden">
-        {/* Floating Shapes */}
-        <div className="pill-shape bg-google-green" style={{ width: '140px', height: '28px', top: '15%', left: '10%', transform: 'rotate(-5deg)' }} />
-        <div className="pill-shape bg-google-yellow" style={{ width: '100px', height: '24px', bottom: '20%', left: '30%', transform: 'rotate(8deg)' }} />
-        <div className="circle-shape bg-google-blue" style={{ width: '280px', height: '280px', bottom: '-50px', right: '-50px' }} />
-        <div className="absolute font-bold text-google-yellow" style={{ fontSize: '80px', top: '15%', right: '15%', lineHeight: 1 }}>★</div>
-        <div className="circle-shape bg-google-red" style={{ width: '40px', height: '40px', top: '35%', left: '55%' }} />
+        {/* decorative shapes removed to keep hero clear */}
 
         {/* Left Side Vertical Text */}
-        <div className="absolute left-8 top-1/3 origin-bottom-left -rotate-90 text-[#00c853] text-[11px] tracking-[3px] font-medium hidden lg:block whitespace-nowrap">
+        <div className="absolute left-8 top-1/3 origin-bottom-left -rotate-90 text-white text-[11px] tracking-[3px] font-medium hidden lg:block whitespace-nowrap">
           MULTI-AGENT / IPL STRATEGIST / GOOGLE GEMINI
         </div>
 
-        <div className="relative z-10 w-full max-w-5xl lg:ml-12 mt-12">
+        <div className="relative z-10 w-full max-w-3xl lg:ml-12 mt-12 glass-panel p-6 rounded-xl">
           {/* Main Hero Text */}
           <div className="flex flex-col">
-            <h1 className="text-[72px] lg:text-[96px] font-[900] tracking-[-4px] leading-[0.9] text-google-blue m-0">
+            <h1 className="text-[112px] lg:text-[160px] font-[900] tracking-[-4px] leading-[0.9] text-google-blue m-0">
               CAPTAIN
             </h1>
-            <h1 className="text-[72px] lg:text-[96px] font-[900] tracking-[-4px] leading-[0.9] text-[#f9ab00] m-0">
+            <h1 className="text-[112px] lg:text-[160px] font-[900] tracking-[-4px] leading-[0.9] text-[#f9ab00] m-0">
               COOL
             </h1>
           </div>
 
           {/* Stat Pills */}
           <div className="mt-[32px] flex flex-wrap gap-4">
-            <span className="pill-stat bg-google-blue text-[#f9ab00]">5 AGENTS</span>
-            <span className="pill-stat bg-google-green text-[#f9ab00]">3 TOOLS</span>
-            <span className="pill-stat bg-google-yellow text-[#f9ab00]">GEMINI 2.5</span>
+            <span className="pill-stat bg-google-blue text-[#f9ab00] glass-card">5 AGENTS</span>
+            <span className="pill-stat bg-google-blue text-[#f9ab00] glass-card">3 TOOLS</span>
+            <span className="pill-stat bg-google-blue text-[#f9ab00] glass-card">GEMINI 2.5</span>
           </div>
 
           {/* CTA */}
@@ -91,7 +88,7 @@ const Landing = () => {
         </div>
 
         {/* Bottom Right Explore */}
-        <div className="absolute bottom-8 right-8 text-[13px] text-[#00c853] font-medium tracking-wide">
+        <div className="absolute bottom-8 right-8 text-[13px] text-white font-medium tracking-wide">
           EXPLORE &darr;
         </div>
       </section>
@@ -104,14 +101,14 @@ const Landing = () => {
 
         <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-8 items-start lg:items-center">
           <div className="w-full lg:w-1/2 flex flex-col">
-            <span className="overline-text text-google-green mb-6">THE PROBLEM</span>
+            <span className="overline-text text-white mb-6">THE PROBLEM</span>
             <h2 className="text-[100px] lg:text-[160px] font-[900] leading-[0.85] tracking-[-2px] text-[#f9ab00] m-0">
               200
             </h2>
             <h2 className="text-[56px] lg:text-[80px] font-[900] leading-[1] tracking-[-2px] text-[#f9ab00] m-0">
               DECISIONS
             </h2>
-            <h2 className="text-[56px] lg:text-[80px] font-[900] leading-[1] tracking-[-2px] text-[#00c853] m-0">
+            <h2 className="text-[56px] lg:text-[80px] font-[900] leading-[1] tracking-[-2px] text-white m-0">
               PER MATCH.
             </h2>
           </div>
@@ -133,24 +130,24 @@ const Landing = () => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="relative bg-[#f9ab00]/40 rounded-[16px] p-8 overflow-hidden">
+            <div className="relative glass-card rounded-[16px] p-8 overflow-hidden">
               <div className="absolute -top-4 -right-4 text-[96px] font-[900] text-google-blue opacity-15 select-none leading-none">01</div>
               <h3 className="relative z-10 text-[20px] font-[700] text-[#1a1a1a] mb-4 mt-16">Provide Context</h3>
-              <p className="relative z-10 text-[15px] text-[#00c853] leading-[1.7]">
+              <p className="relative z-10 text-[15px] text-white leading-[1.7]">
                 Feed in match state, current over, ball events, and custom notes. Or use our screenshot tool.
               </p>
             </div>
-            <div className="relative bg-[#f9ab00]/40 rounded-[16px] p-8 overflow-hidden">
+            <div className="relative glass-card rounded-[16px] p-8 overflow-hidden">
               <div className="absolute -top-4 -right-4 text-[96px] font-[900] text-google-green opacity-15 select-none leading-none">02</div>
               <h3 className="relative z-10 text-[20px] font-[700] text-[#1a1a1a] mb-4 mt-16">Agents Debate</h3>
-              <p className="relative z-10 text-[15px] text-[#00c853] leading-[1.7]">
+              <p className="relative z-10 text-[15px] text-white leading-[1.7]">
                 Stats, Strategist, and Devil's Advocate argue internally to expose flaws in initial plans.
               </p>
             </div>
-            <div className="relative bg-[#f9ab00]/40 rounded-[16px] p-8 overflow-hidden">
+            <div className="relative glass-card rounded-[16px] p-8 overflow-hidden">
               <div className="absolute -top-4 -right-4 text-[96px] font-[900] text-google-yellow opacity-15 select-none leading-none">03</div>
               <h3 className="relative z-10 text-[20px] font-[700] text-[#1a1a1a] mb-4 mt-16">Actionable Output</h3>
-              <p className="relative z-10 text-[15px] text-[#00c853] leading-[1.7]">
+              <p className="relative z-10 text-[15px] text-white leading-[1.7]">
                 Commentator synthesizes the final strategy with confidence scores and counterfactuals.
               </p>
             </div>
@@ -172,10 +169,10 @@ const Landing = () => {
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <span className="text-[32px] leading-none">📊</span>
-                  <span className="bg-[#f1f3f4] text-[#00c853] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-flash</span>
+                  <span className="bg-[#f1f3f4] text-[#1a1a1a] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-flash</span>
                 </div>
                 <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Stats Analyst</h4>
-                <p className="text-[13px] text-[#00c853]">Crunches historical data & win probs.</p>
+                <p className="text-[13px] text-white">Crunches historical data & win probs.</p>
               </div>
               <div><span className="bg-google-blue text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">INTELLIGENCE</span></div>
             </div>
@@ -188,7 +185,7 @@ const Landing = () => {
                   <span className="bg-google-blue text-[#f9ab00] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-pro</span>
                 </div>
                 <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Strategist</h4>
-                <p className="text-[13px] text-[#00c853]">Builds primary tactical plans.</p>
+                <p className="text-[13px] text-white">Builds primary tactical plans.</p>
               </div>
               <div><span className="bg-google-green text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">DECISION</span></div>
             </div>
@@ -198,10 +195,10 @@ const Landing = () => {
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <span className="text-[32px] leading-none">⚔️</span>
-                  <span className="bg-[#f1f3f4] text-[#00c853] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-flash</span>
+                  <span className="bg-[#f1f3f4] text-[#1a1a1a] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-flash</span>
                 </div>
                 <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Devil's Advocate</h4>
-                <p className="text-[13px] text-[#00c853]">Challenges strategies, identifies risks.</p>
+                <p className="text-[13px] text-white">Challenges strategies, identifies risks.</p>
               </div>
               <div><span className="bg-google-red text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">CHALLENGE</span></div>
             </div>
@@ -214,7 +211,7 @@ const Landing = () => {
                   <span className="bg-google-blue text-[#f9ab00] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-pro</span>
                 </div>
                 <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Strategist Round 2</h4>
-                <p className="text-[13px] text-[#00c853]">Refines response after critique.</p>
+                <p className="text-[13px] text-white">Refines response after critique.</p>
               </div>
               <div><span className="bg-google-yellow text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">REVISION</span></div>
             </div>
@@ -224,10 +221,10 @@ const Landing = () => {
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <span className="text-[32px] leading-none">🎙️</span>
-                  <span className="bg-[#f1f3f4] text-[#00c853] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-flash</span>
+                  <span className="bg-[#f1f3f4] text-[#1a1a1a] text-[10px] uppercase font-bold tracking-wide px-3 py-1 rounded-full">gemini-2.5-flash</span>
                 </div>
                 <h4 className="text-[16px] font-[700] text-[#1a1a1a] mb-1">Commentator</h4>
-                <p className="text-[13px] text-[#00c853]">Final verdict and narrative synthesis.</p>
+                <p className="text-[13px] text-white">Final verdict and narrative synthesis.</p>
               </div>
               <div><span className="bg-google-purple text-[#f9ab00] text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full" style={{ backgroundColor: 'var(--purple-accent)' }}>NARRATIVE</span></div>
             </div>
@@ -241,24 +238,24 @@ const Landing = () => {
         <h2 className="text-[40px] lg:text-[56px] font-[800] text-[#1a1a1a] tracking-[-1.5px] mb-2 text-center">
           See it in action.
         </h2>
-        <p className="text-[20px] lg:text-[24px] text-[#00c853] mb-16 text-center">
+        <p className="text-[20px] lg:text-[24px] text-white mb-16 text-center">
           MI vs CSK. Over 18. Dhoni on strike.
         </p>
 
-        <div className="w-full max-w-[800px] flex flex-col gap-4">
-          <div className="bg-white rounded-r-[12px] border-l-[4px] border-google-blue p-6 lg:p-8 shadow-sm">
+          <div className="w-full max-w-[800px] flex flex-col gap-4">
+          <div className="glass-card rounded-r-[12px] border-l-[4px] border-google-blue p-6 lg:p-8 shadow-sm">
             <div className="text-[11px] font-[600] uppercase tracking-[2px] text-google-blue mb-3">STATS ANALYST</div>
             <p className="font-mono text-[14px] leading-[1.8] text-[#1a1a1a]">
               "Dhoni SR vs Pace off: 145. SR vs Yorker: 92. Projected edge heavily favors wide yorkers over cutters."
             </p>
           </div>
-          <div className="bg-white rounded-r-[12px] border-l-[4px] border-google-red p-6 lg:p-8 shadow-sm relative ml-0 lg:ml-12">
+          <div className="glass-card rounded-r-[12px] border-l-[4px] border-google-red p-6 lg:p-8 shadow-sm relative ml-0 lg:ml-12">
             <div className="text-[11px] font-[600] uppercase tracking-[2px] text-google-red mb-3">DEVIL'S ADVOCATE</div>
             <p className="font-mono text-[14px] leading-[1.8] text-[#1a1a1a]">
               "Miss a wide yorker and it's a guaranteed boundary given point is up. He is anticipating the wide line. Don't be predictable."
             </p>
           </div>
-          <div className="bg-white rounded-r-[12px] border-l-[4px] border-google-green p-6 lg:p-8 shadow-sm">
+          <div className="glass-card rounded-r-[12px] border-l-[4px] border-google-green p-6 lg:p-8 shadow-sm">
             <div className="text-[11px] font-[600] uppercase tracking-[2px] text-google-green mb-3">STRATEGIST R2</div>
             <p className="font-mono text-[14px] leading-[1.8] text-[#1a1a1a]">
               "Adjust field: push third man deep. Bowl hard length at the body first ball to jam him, then wide yorker once he shifts weight."
@@ -275,7 +272,7 @@ const Landing = () => {
 
       {/* SECTION 6 - Tech Stack */}
       <section className="w-full bg-white px-8 lg:px-24 py-32 flex flex-col items-center">
-        <span className="text-[11px] font-[600] uppercase tracking-[2px] text-[#00c853] mb-8">BUILT ON</span>
+        <span className="text-[11px] font-[600] uppercase tracking-[2px] text-white mb-8">BUILT ON</span>
         <div className="flex flex-wrap justify-center gap-4 max-w-4xl">
           <span className="btn-pill-outline">React</span>
           <span className="btn-pill-outline">Tailwind</span>
@@ -310,7 +307,7 @@ const Landing = () => {
             Make the Call →
           </Link>
 
-          <p className="text-[12px] text-[#00c853] mt-12 pt-8">
+          <p className="text-[12px] text-white mt-12 pt-8">
             Built for APL 2026 · Powered by Google Gemini
           </p>
         </div>

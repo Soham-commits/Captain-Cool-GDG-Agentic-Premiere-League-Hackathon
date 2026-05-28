@@ -63,8 +63,8 @@ const MatchInputForm = ({ onSubmit, isLoading }: MatchInputFormProps) => {
     onSubmit({ type: activeTab, payload: textInput });
   };
 
-  const inputCls = 'w-full bg-[#1b1b1b] border border-[rgba(255,255,255,0.06)] rounded-[8px] px-[14px] py-[10px] text-[#e1e3e1] text-[14px] focus:border-[rgba(255,255,255,0.2)] focus:outline-none transition-colors';
-  const labelCls = 'text-[10px] font-medium tracking-[1.5px] uppercase text-[var(--green-primary)] mb-[12px] block';
+  const inputCls = 'w-full input-field rounded-[8px] px-[14px] py-[10px] text-[14px] focus:border-[rgba(255,255,255,0.2)] focus:outline-none transition-colors';
+  const labelCls = 'text-[10px] font-medium tracking-[1.5px] uppercase text-[#1a73e8] mb-[12px] block';
 
   return (
     <div className="w-full text-left">
@@ -234,16 +234,15 @@ const MatchInputForm = ({ onSubmit, isLoading }: MatchInputFormProps) => {
             </div>
 
             <div className="flex items-center mt-2">
-              <input
-                type="checkbox"
-                id="impactPlayer"
-                className="mr-3 h-5 w-5 accent-[var(--green-primary)] rounded border-[var(--border-subtle)] bg-[#1c1c1e]"
-                checked={formState.impactPlayerAvailable}
-                onChange={(e) => updateField('impactPlayerAvailable', e.target.checked)}
-              />
-              <label htmlFor="impactPlayer" className="text-[14px] text-white">
-                Impact Player Available
+              <label className="toggle-switch mr-3">
+                <input
+                  type="checkbox"
+                  checked={formState.impactPlayerAvailable}
+                  onChange={(e) => updateField('impactPlayerAvailable', e.target.checked)}
+                />
+                <span className="switch" />
               </label>
+              <div className="text-[14px] text-white">Impact Player Available</div>
             </div>
           </>
         )}
@@ -271,19 +270,12 @@ const MatchInputForm = ({ onSubmit, isLoading }: MatchInputFormProps) => {
           </div>
         )}
 
-        <button
-          type="submit"
-          className="btn-primary w-full mt-4"
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <span className="flex items-center justify-center gap-2">
-              <span className="animate-pulse">Analyzing...</span>
-            </span>
-          ) : (
-            'Analyze Strategies'
-          )}
-        </button>
+            <button
+              type="submit"
+              className="analyze-btn w-full mt-4"
+            >
+              Analyze Strategies
+            </button>
       </form>
     </div>
   );

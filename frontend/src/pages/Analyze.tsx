@@ -101,14 +101,30 @@ const Analyze = () => {
   };
 
   return (
-    <div className="w-full flex flex-col bg-[#0d0d0d] min-h-[calc(100vh-64px)] text-white">
+    <div className="w-full flex flex-col bg-transparent min-h-[calc(100vh-64px)] text-white">
+      {/* Background video like Landing */}
+      <video
+        src="/Stadium.mp4"
+        className="fixed inset-0 w-full h-full object-cover z-0 opacity-100"
+        preload="auto"
+        muted
+        playsInline
+        autoPlay
+        loop
+        aria-hidden
+        style={{ pointerEvents: 'none' }}
+      />
+
+      {/* subtle overlay so content reads */}
+      <div className="fixed inset-0 z-10 bg-black/30" />
+
       {/* Colored Top Border Strip */}
       <div 
-        className="w-full h-[4px]" 
+        className="w-full h-[4px] relative z-20" 
         style={{ background: 'linear-gradient(90deg, #1a73e8, #00c853, #f9ab00, #ea4335)' }}
       />
-      
-      <div className="flex flex-col lg:flex-row flex-1">
+
+      <div className="flex flex-col lg:flex-row flex-1 relative z-20">
         {/* LEFT COLUMN: Input Form (40%) */}
         <div className="w-full lg:w-[40%] bg-[#161616] border-r border-[rgba(255,255,255,0.06)] p-[48px] overflow-y-auto">
           <MatchInputForm
