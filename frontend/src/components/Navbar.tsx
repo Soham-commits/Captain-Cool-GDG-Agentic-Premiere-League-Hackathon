@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <nav className="bg-card border-b border-gray-800 p-4">
+    <nav className="bg-card border-b border-white/10 p-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold text-primary">
           Captain Cool
         </Link>
-        <div className="flex gap-6">
+        <div className="flex gap-6 text-textMain">
           <Link to="/analyze" className="hover:text-primary transition-colors">
             Analyze
           </Link>

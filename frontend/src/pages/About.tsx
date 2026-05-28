@@ -5,7 +5,7 @@ const About = () => {
       
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4 text-primary">APL Submission Context</h2>
-        <p className="text-gray-300 leading-relaxed">
+        <p className="text-textMain/90 leading-relaxed">
           Built for the GDG Agentic Premiere League Hackathon, Captain Cool simulates a highly intelligent 
           panel of cricket experts. By leveraging Google's Gemini models and ADK, it processes real-time 
           context and simulates debating strategies to provide the ultimate match analysis.
@@ -14,18 +14,18 @@ const About = () => {
 
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4 text-accent">Agent Roles</h2>
-        <ul className="space-y-4 text-gray-300">
-          <li><strong className="text-white">Stats Analyst:</strong> Crunches numbers, historical data, and win probabilities.</li>
-          <li><strong className="text-white">Strategist:</strong> Looks at team composition, weather, and pitch conditions to propose an initial plan.</li>
-          <li><strong className="text-white">Devil's Advocate:</strong> Challenges the established strategies, pointing out risks and alternative scenarios.</li>
-          <li><strong className="text-white">Strategist Round 2:</strong> Refines the initial strategy based on the Devil's Advocate's critiques.</li>
-          <li><strong className="text-white">Commentator:</strong> Synthesizes the entire debate into a clear, engaging final narrative.</li>
+        <ul className="space-y-4 text-textMain/90">
+          <li><strong className="text-textMain">Stats Analyst:</strong> Crunches numbers, historical data, and win probabilities.</li>
+          <li><strong className="text-textMain">Strategist:</strong> Looks at team composition, weather, and pitch conditions to propose an initial plan.</li>
+          <li><strong className="text-textMain">Devil's Advocate:</strong> Challenges the established strategies, pointing out risks and alternative scenarios.</li>
+          <li><strong className="text-textMain">Strategist Round 2:</strong> Refines the initial strategy based on the Devil's Advocate's critiques.</li>
+          <li><strong className="text-textMain">Commentator:</strong> Synthesizes the entire debate into a clear, engaging final narrative.</li>
         </ul>
       </section>
 
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Architecture</h2>
-        <div className="bg-card p-6 rounded-xl border border-gray-800 font-mono text-sm text-gray-400">
+        <div className="bg-card p-6 rounded-xl border border-white/10 font-mono text-sm text-textMuted">
           <p>[ User Input ] ➔ [ Orchestrator ]</p>
           <p className="pl-8">➔ [ Stats Analyst ] (Retrieves Cricbuzz & Weather Context)</p>
           <p className="pl-8">➔ [ Strategist ]</p>

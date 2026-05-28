@@ -9,10 +9,11 @@ export default {
       colors: {
         background: '#0a0a0a',
         primary: '#00e676',
-        card: '#1a1a2e',
+        card: '#0f1923',
         accent: '#ff6d00',
         danger: '#ef5350',
         textMain: '#e0e0e0',
+        textMuted: '#616161',
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
